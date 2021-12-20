@@ -44,5 +44,5 @@ python main.py
 ```
 
 ---
-#### TODO
-目前验证码验证使用 easyocr 模块，可能验证准确率较低，目前正在解决中
+#### mention 
+注意`profileId`的修改

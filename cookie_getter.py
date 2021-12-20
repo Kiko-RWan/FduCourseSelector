@@ -19,8 +19,8 @@ class CookieGetter(Request):
     def getCookies(self):
         req = self.Post(url=self.loginUrl, params=self.selCourseParams, allow_redirects=False)
         cookies = req.cookies
-        redirect_url = "".join([self.xkUrl, req.headers['Location']])
-        req = self.Get(url=redirect_url, cookies=cookies)
+        # redirect_url = "".join([self.xkUrl, req.headers['Location']])
+        req = self.Get(url=req.headers['Location'], cookies=cookies)
         redirect_url = re.search("(?<=href=\").*(?=\")", req.text).group(0)
         if(redirect_url):
             req = self.Get(

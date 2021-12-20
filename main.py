@@ -6,6 +6,9 @@ from cookie_getter import CookieGetter
 from captcha import read_captcha
 from email_sender import sendEmail
 from utils import *
+from PIL import Image
+import io
+from bs4 import BeautifulSoup
 
 _, URL_DICT = ReadNetWorkJson()
 
@@ -44,23 +47,22 @@ class CourseSearcher(CookieGetter):
     def searchCourse(self, lessonNo):
         form = self.form_data
         form['lessonNo'] = lessonNo
-        
         self.direct_to_selCoursePage() # 验证步骤，必须执行，不然会被服务器反制
         res = self.Post(
             url=self.baseUrl,
             cookies=self.cookies,
             data = form,
-            ErrMsg="Serch Course Error (getCourseNoAndId)"
+            ErrMsg="Search Course Error (getCourseNoAndId)"
         )
         return res
     
     def direct_to_selCoursePage(self):
-        self.Get(
+        req = self.Get(
             url=self.xkPageUrl,
             cookies=self.cookies,
             ErrMsg="Get Main Page Error (getCourseNoAndId) Get"
         )
-        self.Post(
+        req = self.Post(
             url=self.mainUrl,
             cookies=self.cookies,
             data = self.main_page_data,
@@ -80,8 +82,10 @@ class CourseSearcher(CookieGetter):
             data=form_data,
             ErrMsg="selCourse Error (selCourse)"
         )
-        #print(response.content.decode(encoding='utf-8'))
-        print("选课成功")
+        text = BeautifulSoup(response.text, 'html.parser').get_text()
+        text = re.sub('(\s)+', ' ', text)
+        print(text)
+        
         
     def getCaptcha(self):
         response = self.Get(
